@@ -73,6 +73,7 @@ handler._user.post = (requestProperties, callback) => {
     }
 };
 
+//@TODO authentication
 handler._user.get = (requestProperties, callback) => {
     // check the phone number if valid
     const phone = typeof (requestProperties.queryStringObject.phone) === 'string' && requestProperties.queryStringObject.phone.trim().length === 11 ? requestProperties.queryStringObject.phone : false;
@@ -93,8 +94,97 @@ handler._user.get = (requestProperties, callback) => {
     }
 };
 
-handler._user.put = (requestProperties, callback) => { };
+//@TODO authentication
+handler._user.put = (requestProperties, callback) => {
+    const firstName = typeof (requestProperties.body.firstName) === 'string' && requestProperties.body.firstName.trim().length > 0 ? requestProperties.body.firstName : false;
 
-handler._user.delete = (requestProperties, callback) => { };
+    const lastName = typeof (requestProperties.body.lastName) === 'string' && requestProperties.body.lastName.trim().length > 0 ? requestProperties.body.lastName : false;
+
+    const password = typeof (requestProperties.body.password) === 'string' && requestProperties.body.password.trim().length > 0 ? requestProperties.body.password : false;
+
+    const phone = typeof (requestProperties.body.phone) === 'string' && requestProperties.body.phone.trim().length === 11 ? requestProperties.body.phone : false;
+
+    if (phone) {
+        if (firstName || lastName || password) {
+            // lookup the user
+            data.read('user', phone, (err1, uData) => {
+
+                const userData = { ...parseJSON(uData) };
+
+                if (!err1 && userData) {
+
+                    if (firstName) {
+                        userData.firstName = firstName;
+                    }
+                    if (lastName) {
+                        userData.lastName = lastName; firstName;
+                    }
+                    if (firstName) {
+                        userData.password = hash(password);
+                    }
+
+                    // store to database
+                    data.update('user', phone, userData, (err2) => {
+                        if (!err2) {
+                            callback(200, {
+                                "message": 'User was update successfully'
+                            })
+                        } else {
+                            callback(500, {
+                                error: "There was a problem in your server side"
+                            })
+                        }
+                    })
+
+                } else {
+                    callback(400, {
+                        error: 'You have a problem in your request'
+                    })
+                }
+            })
+        } else {
+            callback(400, {
+                error: 'You have a problem in your request'
+            })
+        }
+    } else {
+        callback(400, {
+            error: 'Invalid phone number. please try again'
+        })
+    }
+};
+
+//@TODO authentication
+handler._user.delete = (requestProperties, callback) => {
+    const phone = typeof (requestProperties.body.phone) === 'string' && requestProperties.body.phone.trim().length === 11 ? requestProperties.body.phone : false;
+    if (phone) {
+        // lookup the user
+        data.read('user', phone, (err1, userData) => {
+            if (!err1 && userData) {
+                //delete the user
+                data.delete('user', phone, (err2) => {
+                    if (!err2) {
+                        callback(200, {
+                            "message": 'User deleted successfully'
+                        })
+                    } else {
+                        callback(500, {
+                            error: 'There was a problem in your server side'
+                        })
+                    }
+                })
+            } else {
+                callback(500, {
+                    error: 'There was a problem in your server side'
+                })
+            }
+        })
+    } else {
+        callback(400, {
+            error: 'There was a problem'
+        })
+    }
+
+};
 
 module.exports = handler;
