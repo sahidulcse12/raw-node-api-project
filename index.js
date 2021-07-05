@@ -11,9 +11,15 @@ const http = require('http');
 const { handleReqRes } = require('./helpers/handleReqRes');
 const environment = require('./helpers/environments');
 const data = require('./lib/data')
+const { sendTwilioSms } = require('./helpers/notification')
 
 // App object - module scaffolding
 const app = {}
+
+//@TODO sms request check 
+// sendTwilioSms('01777877630', 'hello muhit', (err) => {
+//     console.log(err)
+// })
 
 // testing file system
 // data.create('test', 'newFile', { name: 'Bangladesh', language: 'Bengali' }, (err) => {

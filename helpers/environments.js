@@ -14,6 +14,11 @@ environments.staging = {
     envName: 'staging',
     secretKey: 'dshshgwsohwoe',
     maxChecks: 5,
+    twilio: {
+        fromPhone: '+12512704109',
+        accountSid: 'ACf0786408e1196bf83de8a1b93ac8baa6',
+        authToken: '9723d97a5f279c789f11c84ba1d16dc0',
+    },
 };
 
 environments.production = {
@@ -21,6 +26,11 @@ environments.production = {
     envName: 'production',
     secretKey: 'hgdskjslkhsd',
     maxChecks: 5,
+    twilio: {
+        fromPhone: '+12512704109',
+        accountSid: 'ACf0786408e1196bf83de8a1b93ac8baa6',
+        authToken: '9723d97a5f279c789f11c84ba1d16dc0',
+    },
 };
 
 // determine which environments was passed
